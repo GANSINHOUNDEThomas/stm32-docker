@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  stm32cubeide:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: stm32cubeide_workspace
+    image: stm32cubeide:1.18.0
+    volumes:
+      - ./projects:/workspace/projects
+      - ./stm32cubeide-settings:/root/.st/stm32cubeide_1.18.0
+    environment:
+      - DISPLAY=${DISPLAY}
+    network_mode: host
+    privileged: true
+    stdin_open: true
+    tty: true
+    working_dir: /workspace
