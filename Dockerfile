@@ -1,18 +1,22 @@
-FROM ubuntu:20.04
 
-# Prevent interactive prompts during installation
-ENV DEBIAN_FRONTEND=noninteractive
+FROM ubuntu:22.04
 
-# Install dependencies for STM32CubeIDE and ARM toolchain
-RUN apt-get update && apt-get install -y \n    wget \n    unzip \n    git \n    build-essential \n    libncurses5 \n    libncurses5:i386 \n    libc6-i386 \n    lib32z1 \n    lib32stdc++6 \n    lib32gcc1 \n    openjdk-11-jre \n    && rm -rf /var/lib/apt/lists/*
+# Prevent interactive prompts and set timezone to Europe/Paris
+ENV DEBIAN_FRONTEND=noninteractive TZ=Europe/Paris
 
-# Create a working directory
-WORKDIR /workspace
+# Install base dependencies and configure locales
+RUN apt update && apt upgrade -y && \
+    apt install -y sudo wget curl git zenity terminator grep nano mesa-utils locales tzdata gnome-terminal dbus-x11 libcanberra-gtk-module libcanberra-gtk3-module && \
+    ln -fs /usr/share/zoneinfo/Europe/Paris /etc/localtime && \
+    dpkg-reconfigure --frontend noninteractive tzdata && \
+    locale-gen en_US en_US.UTF-8 && \
+    update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
 
-# Set up environment variables
-ENV PATH="/opt/st/stm32cubeide_1.18.0/tools/bin:${PATH}"
+ENV LANG=en_US.UTF-8
 
-# Verify GDB installation will work after adding the installer
-RUN echo "Docker image ready for STM32CubeIDE"
+# Setup workspace
+RUN mkdir -p ~/ws/src
 
-CMD ["/bin/bash"]
+# Set default command
+CMD ["/usr/bin/terminator"]
+
