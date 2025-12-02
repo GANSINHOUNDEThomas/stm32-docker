@@ -1,0 +1,30 @@
+FROM ubuntu:20.04
+
+# Prevent interactive prompts during installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies for STM32CubeIDE and ARM toolchain
+RUN apt-get update && apt-get install -y \
+    wget \
+    unzip \
+    git \
+    build-essential \
+    libncurses5 \
+    libncurses5:i386 \
+    libc6-i386 \
+    lib32z1 \
+    lib32stdc++6 \
+    lib32gcc1 \
+    openjdk-11-jre \
+    libx11-6 \
+    libxext6 \
+    libxrender1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create a working directory
+WORKDIR /workspace
+
+# Set up environment variables
+ENV PATH="/opt/st/stm32cubeide_1.18.0/tools/bin:${PATH}"
+
+CMD ["/bin/bash"]
